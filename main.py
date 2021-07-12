@@ -7,6 +7,7 @@ import json
 
 line = [] #라인 단위로 데이터 가져올 리스트 변수
 acc = 0
+data = {}
 
 port = '/dev/ttyUSB0' # 시리얼 포트
 baud = 9600 # 시리얼 보드레이트(통신속도)
@@ -20,7 +21,7 @@ def socketthread():
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.connect(("192.168.1.69", 9999))
             while True:
-                data = {'accel': acc}
+                data['accel'] = acc
                 sock.sendall(bytes(json.dumps(data), encoding="utf-8"))
                 time.sleep(1/30)
         except [ConnectionRefusedError, ConnectionAbortedError, TypeError]:
