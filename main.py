@@ -15,6 +15,7 @@ baud = 9600 # 시리얼 보드레이트(통신속도)
 
 def socketthread():
     global acc
+    global data
 
     while True:
         try:
