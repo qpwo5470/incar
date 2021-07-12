@@ -18,7 +18,7 @@ def socketthread():
     while True:
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.connect(("192.168.0.2", 9999))
+            sock.connect(("192.168.1.69", 9999))
             while True:
                 data = {'accel': acc}
                 sock.sendall(bytes(json.dumps(data), encoding="utf-8"))
