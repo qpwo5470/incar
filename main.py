@@ -23,8 +23,7 @@ def socketthread():
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.connect(("192.168.1.69", 9999))
             while True:
-                data['accel'] = random.randint(0, 255)
-                print(data)
+                data['accel'] = acc
                 sock.sendall(bytes(json.dumps(data), encoding="utf-8"))
                 time.sleep(0.2)
         except [ConnectionRefusedError, ConnectionAbortedError, ConnectionResetError, BrokenPipeError]:
