@@ -3,6 +3,7 @@ import time
 import threading
 import socket
 import json
+import random
 
 
 line = [] #라인 단위로 데이터 가져올 리스트 변수
@@ -22,7 +23,7 @@ def socketthread():
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.connect(("192.168.1.69", 9999))
             while True:
-                data['accel'] = acc
+                data['accel'] = random.randint(0, 255)
                 print(data)
                 sock.sendall(bytes(json.dumps(data), encoding="utf-8"))
                 time.sleep(0.2)
