@@ -8,7 +8,7 @@ import json
 line = [] #라인 단위로 데이터 가져올 리스트 변수
 acc = 0
 
-port = 'COM3' # 시리얼 포트
+port = 'ttyUSB0' # 시리얼 포트
 baud = 9600 # 시리얼 보드레이트(통신속도)
 
 
