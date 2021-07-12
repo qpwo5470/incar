@@ -25,7 +25,7 @@ def socketthread():
             while True:
                 data['accel'] = acc
                 sock.sendall(bytes(json.dumps(data), encoding="utf-8"))
-                time.sleep(0.2)
+                time.sleep(1/15)
         except [ConnectionRefusedError, ConnectionAbortedError, ConnectionResetError, BrokenPipeError]:
             pass
 
