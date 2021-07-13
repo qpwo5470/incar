@@ -46,6 +46,7 @@ def serialthread(ser):
         for c in ser.read():
             if c == 10:
                 text = ''.join(line).strip()
+                print(text)
                 if text[0] == 'A':
                     text = text[1:]
                     if text.isnumeric():
