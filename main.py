@@ -62,11 +62,11 @@ def serialthread(ser):
 
 
 if __name__ == "__main__":
-    ser = serial.Serial(portA, baud, timeout=0)
-    serial_thread = threading.Thread(target=serialthread, args=(ser,))
-    serial_thread.start()
-    ser = serial.Serial(portB, baud, timeout=0)
-    serial_thread = threading.Thread(target=serialthread, args=(ser,))
-    serial_thread.start()
+    serA = serial.Serial(portA, baud, timeout=0)
+    serial_threadA = threading.Thread(target=serialthread, args=(serA,))
+    serial_threadA.start()
+    serB = serial.Serial(portB, baud, timeout=0)
+    serial_threadB = threading.Thread(target=serialthread, args=(serB,))
+    serial_threadB.start()
     socket_thread = threading.Thread(target=socketthread(), args=())
     socket_thread.start()
