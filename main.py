@@ -4,8 +4,6 @@ import threading
 import socket
 import json
 
-
-line = []
 acc = 0
 p_button = 0
 gear = 'N'
@@ -37,12 +35,12 @@ def socketthread():
 
 
 def serialthread(ser):
-    global line
     global acc
     global p_button
     global gear
 
     while True:
+        line = []
         for c in ser.read():
             if c == 10:
                 text = ''.join(line).strip()
@@ -53,7 +51,6 @@ def serialthread(ser):
                         acc = int(text)
                     else:
                         print(text)
-                    del line[:]
                 elif text[0] == 'D':
                     text = text[1:]
                     temp = text.split('/')
