@@ -34,7 +34,7 @@ def socketthread():
             pass
 
 
-def serialthreadA(ser):
+def serialthread(ser):
     global acc
     global p_button
     global gear
@@ -65,7 +65,12 @@ def serialthreadA(ser):
 
 if __name__ == "__main__":
     serA = serial.Serial(portA, baud, timeout=0)
-    serial_threadA = threading.Thread(target=serialthreadA, args=(serA,))
+    serial_threadA = threading.Thread(target=serialthread, args=(serA,))
     serial_threadA.start()
+
+    serB = serial.Serial(portB, baud, timeout=0)
+    serial_threadB = threading.Thread(target=serialthread, args=(serB,))
+    serial_threadB.start()
+
     socket_thread = threading.Thread(target=socketthread(), args=())
     socket_thread.start()
