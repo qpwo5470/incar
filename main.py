@@ -43,17 +43,20 @@ def serialthread(ser):
         line = ser.readline()
         text = ''.join(line).strip()
         print(text)
-        if text[0] == 'A':
-            text = text[1:]
-            if text.isnumeric():
-                acc = int(text)
-            else:
-                print(text)
-        elif text[0] == 'D':
-            text = text[1:]
-            temp = text.split('/')
-            p_button = int(temp[0])
-            gear = temp[1]
+        try:
+            if text[0] == 'A':
+                text = text[1:]
+                if text.isnumeric():
+                    acc = int(text)
+                else:
+                    print(text)
+            elif text[0] == 'D':
+                text = text[1:]
+                temp = text.split('/')
+                p_button = int(temp[0])
+                gear = temp[1]
+        except:
+            pass
 
 
 if __name__ == "__main__":
