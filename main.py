@@ -39,8 +39,8 @@ def serialthread(ser):
     global p_button
     global gear
 
+    line = []
     while True:
-        line = []
         for c in ser.read():
             if c == 10:
                 text = ''.join(line).strip()
@@ -51,6 +51,7 @@ def serialthread(ser):
                         acc = int(text)
                     else:
                         print(text)
+                    del line[:]
                 elif text[0] == 'D':
                     text = text[1:]
                     temp = text.split('/')
