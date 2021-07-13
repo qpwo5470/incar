@@ -34,7 +34,33 @@ def socketthread():
             pass
 
 
-def serialthread(ser):
+def serialthreadA(ser):
+    global acc
+    global p_button
+    global gear
+
+    line = []
+    while True:
+        for c in ser.read():
+            if c == 10:
+                text = ''.join(line).strip()
+                print(text)
+                if text[0] == 'A':
+                    text = text[1:]
+                    if text.isnumeric():
+                        acc = int(text)
+                    else:
+                        print(text)
+                    del line[:]
+                elif text[0] == 'D':
+                    text = text[1:]
+                    temp = text.split('/')
+                    p_button = int(temp[0])
+                    gear = temp[1]
+            else:
+                line.append(chr(c))
+
+def serialthreadB(ser):
     global acc
     global p_button
     global gear
@@ -63,10 +89,10 @@ def serialthread(ser):
 
 if __name__ == "__main__":
     serA = serial.Serial(portA, baud, timeout=0)
-    serial_threadA = threading.Thread(target=serialthread, args=(serA,))
+    serial_threadA = threading.Thread(target=serialthreadA, args=(serA,))
     serial_threadA.start()
     serB = serial.Serial(portB, baud, timeout=0)
-    serial_threadB = threading.Thread(target=serialthread, args=(serB,))
+    serial_threadB = threading.Thread(target=serialthreadB, args=(serB,))
     serial_threadB.start()
     socket_thread = threading.Thread(target=socketthread(), args=())
     socket_thread.start()
