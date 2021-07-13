@@ -51,12 +51,12 @@ def serialthreadA(ser):
                         acc = int(text)
                     else:
                         print(text)
-                    del line[:]
                 elif text[0] == 'D':
                     text = text[1:]
                     temp = text.split('/')
                     p_button = int(temp[0])
                     gear = temp[1]
+                del line[:]
             else:
                 line.append(chr(c))
 
