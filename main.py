@@ -41,6 +41,7 @@ def receiverthread():
         client, client_addr = sock.accept()
         print(f'New Client: {client_addr}')
         clients.append((client, client_addr))
+        print(clients)
 
 def senderthread():
     global acc
@@ -50,6 +51,8 @@ def senderthread():
 
     while True:
         global clients
+        print('sender')
+        print(clients)
         for c in clients:
             client, client_addr = c
             data['accel'] = acc
