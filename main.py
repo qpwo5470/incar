@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-
+from MonitoringClient.MonitoringClient import MonitoringClient
 import serial
 import time
 import threading
@@ -21,6 +21,8 @@ def serial_ports():
         except (OSError, serial.SerialException):
             pass
     return result
+
+MC = MonitoringClient('http://34.64.189.234/post.php')
 
 acc = 0
 p_button = 0
@@ -54,7 +56,6 @@ def receiverthread(c):
             data = client.recv(1024).decode()
             if not len(data):
                 raise ValueError
-            print(f'Data from {client_addr} : {data}')
         except:
             print(f'Client Left: {client_addr}')
             break
@@ -63,9 +64,6 @@ def receiverthread(c):
 def senderthread(c, receiver):
     client, client_addr = c
     while True:
-        data['accel'] = acc
-        data['P'] = p_button
-        data['gear'] = gear
         try:
             client.sendall(bytes(json.dumps(data), encoding="utf-8"))
         except:
@@ -79,6 +77,7 @@ def serialthread(ser):
     global p_button
     global gear
     global data
+    global MC
 
     line = []
     while True:
@@ -100,6 +99,9 @@ def serialthread(ser):
                     data['accel'] = acc
                     data['P'] = p_button
                     data['gear'] = gear
+                    MC.set('accel', acc)
+                    MC.set('P', p_button)
+                    MC.set('gear', gear)
                 except IndexError:
                     pass
                 del line[:]
