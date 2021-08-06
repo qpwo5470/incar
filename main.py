@@ -119,8 +119,8 @@ if __name__ == "__main__":
         serial_thread.daemon = True
         serial_thread.start()
 
-    acception_thread = threading.Thread(target=acceptionthread(), args=())
-    acception_thread.daemon = True
-    acception_thread.start()
+    # acception_thread = threading.Thread(target=acceptionthread(), args=())
+    # acception_thread.daemon = True
+    # acception_thread.start()
 
     sock.close()
