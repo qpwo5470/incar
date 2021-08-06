@@ -52,6 +52,8 @@ def receiverthread(c):
     while True:
         try:
             data = client.recv(1024).decode()
+            if not len(data):
+                raise ValueError
             print(f'Data from {client_addr} : {data}')
         except:
             print(f'Client Left: {client_addr}')
