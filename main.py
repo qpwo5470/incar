@@ -108,6 +108,8 @@ if __name__ == "__main__":
 
     except KeyboardInterrupt:
         pass
+    except Exception as e:
+        print(e)
     finally:
         print('closing')
         sock.close()
