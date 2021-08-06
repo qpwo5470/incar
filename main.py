@@ -6,6 +6,21 @@ import time
 import threading
 import socket
 import json
+import glob
+
+
+def serial_ports():
+    ports = glob.glob('/dev/tty[A-Za-z]*')
+
+    result = []
+    for port in ports:
+        try:
+            s = serial.Serial(port)
+            s.close()
+            result.append(port)
+        except (OSError, serial.SerialException):
+            pass
+    return result
 
 acc = 0
 p_button = 0
@@ -13,8 +28,6 @@ gear = 'N'
 data = {}
 clients = []
 
-portA = '/dev/ttyUSB0'
-portB = '/dev/ttyUSB1'
 baud = 9600
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -73,13 +86,10 @@ def serialthread(ser):
                 line.append(chr(c))
 
 if __name__ == "__main__":
-    serA = serial.Serial(portA, baud, timeout=0)
-    serial_threadA = threading.Thread(target=serialthread, args=(serA,))
-    serial_threadA.start()
-
-    serB = serial.Serial(portB, baud, timeout=0)
-    serial_threadB = threading.Thread(target=serialthread, args=(serB,))
-    serial_threadB.start()
+    for port in serial_ports():
+        ser = serial.Serial(port, baud, timeout=0)
+        serial_threadA = threading.Thread(target=serialthread, args=(ser,))
+        serial_threadA.start()
 
     receiver_thread = threading.Thread(target=receiverthread(), args=())
     receiver_thread.start()
