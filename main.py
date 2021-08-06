@@ -22,8 +22,6 @@ def serial_ports():
             pass
     return result
 
-MC = MonitoringClient('http://34.64.189.234/post.php')
-
 acc = 0
 p_button = 0
 gear = 'N'
@@ -85,7 +83,7 @@ def senderthread(c, receiver):
             break
         time.sleep(1/15)
 
-def serialthread(ser, MC):
+def serialthread(ser):
     global acc
     global p_button
     global gear
@@ -106,7 +104,6 @@ def serialthread(ser, MC):
                         text = text[1:]
                         if text.isnumeric():
                             acc = int(text)
-                            MC.set('accel', acc)
                         else:
                             print(text)
                     elif text[0] == 'D':
@@ -115,20 +112,33 @@ def serialthread(ser, MC):
                         temp = text.split('/')
                         p_button = int(temp[0])
                         gear = temp[1]
-                        MC.set('P', p_button)
-                        MC.set('gear', gear)
                 except IndexError:
                     pass
                 del line[:]
             else:
                 line.append(chr(c))
 
+
+def setMC(MC):
+    global acc
+    global p_button
+    global gear
+    MC.set('accel', acc)
+    MC.set('P', p_button)
+    MC.set('gear', gear)
+
+
 if __name__ == "__main__":
     for port in serial_ports():
         ser = serial.Serial(port, baud, timeout=0)
-        serial_thread = threading.Thread(target=serialthread, args=(ser, MC,))
+        serial_thread = threading.Thread(target=serialthread, args=(ser,))
         serial_thread.daemon = True
         serial_thread.start()
+
+    MC = MonitoringClient('http://34.64.189.234/post.php')
+    setMC = threading.Thread(target=setMC, args=(MC))
+    setMC.daemon = True
+    setMC.start()
 
     acception_thread = threading.Thread(target=acceptionthread(), args=())
     acception_thread.daemon = True
