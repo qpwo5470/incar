@@ -26,6 +26,7 @@ acc = 0
 p_button = 0
 gear = 'N'
 data = {}
+clients = []
 
 baud = 9600
 
@@ -33,6 +34,13 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.bind(("0.0.0.0", 9999))
 sock.listen(1)
 
+def receiverthread():
+
+    while True:
+        global clients
+        client, client_addr = sock.accept()
+        print(f'New Client: {client_addr}')
+        clients.append((client, client_addr))
 
 def senderthread():
     global acc
@@ -40,20 +48,18 @@ def senderthread():
     global gear
     global data
 
-    print('Waiting for Client')
-    client, client_addr = sock.accept()
-    print(f'New Client: {client_addr}')
-
     while True:
-        data['accel'] = acc
-        data['P'] = p_button
-        data['gear'] = gear
-        try:
-            client.sendall(bytes(json.dumps(data), encoding="utf-8"))
-        except:
-            print('Waiting for Client')
-            client, client_addr = sock.accept()
-            print(f'New Client: {client_addr}')
+        global clients
+        for c in clients:
+            client, client_addr = c
+            data['accel'] = acc
+            data['P'] = p_button
+            data['gear'] = gear
+            try:
+                client.sendall(bytes(json.dumps(data), encoding="utf-8"))
+            except:
+                print(f'Client Left: {client_addr}')
+                clients.remove(client)
         time.sleep(1/15)
 
 def serialthread(ser):
@@ -90,8 +96,8 @@ if __name__ == "__main__":
         serial_threadA = threading.Thread(target=serialthread, args=(ser,))
         serial_threadA.start()
 
-    sender_thread = threading.Thread(target=senderthread(), args=())
-    sender_thread.start()
-
     receiver_thread = threading.Thread(target=receiverthread(), args=())
     receiver_thread.start()
+
+    sender_thread = threading.Thread(target=senderthread(), args=())
+    sender_thread.start()
