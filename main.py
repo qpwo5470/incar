@@ -85,8 +85,7 @@ def senderthread(c, receiver):
             break
         time.sleep(1/15)
 
-def serialthread():
-    global ser
+def serialthread(ser):
     global acc
     global p_button
     global gear
