@@ -35,6 +35,7 @@ baud = 9600
 # sock.listen(1)
 
 # def acceptionthread():
+#     global sock
 #     while True:
 #         c = sock.accept()
 #         print(f'New Client: {c[1]}')
