@@ -41,7 +41,6 @@ def receiverthread():
         client, client_addr = sock.accept()
         print(f'New Client: {client_addr}')
         clients.append((client, client_addr))
-        print(clients)
 
 def senderthread():
     global acc
@@ -51,8 +50,6 @@ def senderthread():
     global clients
 
     while True:
-        print('sender')
-        print(clients)
         for c in clients:
             client, client_addr = c
             data['accel'] = acc
@@ -104,7 +101,7 @@ if __name__ == "__main__":
         receiver_thread = threading.Thread(target=receiverthread, args=())
         receiver_thread.daemon = True
         receiver_thread.start()
-        print('why')
+
         sender_thread = threading.Thread(target=senderthread, args=())
         sender_thread.daemon = True
         sender_thread.start()
@@ -112,4 +109,5 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         pass
     finally:
+        print('closing')
         sock.close()
