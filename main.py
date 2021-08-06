@@ -104,7 +104,7 @@ if __name__ == "__main__":
         receiver_thread = threading.Thread(target=receiverthread(), args=())
         receiver_thread.daemon = True
         receiver_thread.start()
-
+        print('why')
         sender_thread = threading.Thread(target=senderthread(), args=())
         sender_thread.daemon = True
         sender_thread.start()
@@ -113,4 +113,3 @@ if __name__ == "__main__":
         pass
     finally:
         sock.close()
-        print('socket close')
