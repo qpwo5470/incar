@@ -65,6 +65,7 @@ def serialthread(ser):
     line = []
     while True:
         for c in ser.read():
+            print(c)
             if c == 10:
                 text = ''.join(line).strip()
                 try:
