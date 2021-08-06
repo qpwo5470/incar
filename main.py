@@ -101,6 +101,8 @@ if __name__ == "__main__":
     receiver_thread.daemon = True
     receiver_thread.start()
 
-    sender_thread = threading.Thread(target=senderthread, args=())
+    sender_thread = threading.Thread(target=senderthread(), args=())
     sender_thread.daemon = True
     sender_thread.start()
+
+    sock.close()
