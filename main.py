@@ -91,25 +91,16 @@ def serialthread(ser):
                 line.append(chr(c))
 
 if __name__ == "__main__":
-    try:
-        for port in serial_ports():
-            ser = serial.Serial(port, baud, timeout=0)
-            serial_thread = threading.Thread(target=serialthread, args=(ser,))
-            serial_thread.daemon = True
-            serial_thread.start()
+    for port in serial_ports():
+        ser = serial.Serial(port, baud, timeout=0)
+        serial_thread = threading.Thread(target=serialthread, args=(ser,))
+        serial_thread.daemon = True
+        serial_thread.start()
 
-        receiver_thread = threading.Thread(target=receiverthread, args=())
-        receiver_thread.daemon = True
-        receiver_thread.start()
+    receiver_thread = threading.Thread(target=receiverthread, args=())
+    receiver_thread.daemon = True
+    receiver_thread.start()
 
-        sender_thread = threading.Thread(target=senderthread, args=())
-        sender_thread.daemon = True
-        sender_thread.start()
-
-    except KeyboardInterrupt:
-        pass
-    except Exception as e:
-        print(e)
-    finally:
-        print('closing')
-        sock.close()
+    sender_thread = threading.Thread(target=senderthread, args=())
+    sender_thread.daemon = True
+    sender_thread.start()
