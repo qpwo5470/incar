@@ -35,9 +35,9 @@ sock.bind(("0.0.0.0", 9999))
 sock.listen(1)
 
 def receiverthread():
+    global clients
 
     while True:
-        global clients
         client, client_addr = sock.accept()
         print(f'New Client: {client_addr}')
         clients.append((client, client_addr))
@@ -48,9 +48,9 @@ def senderthread():
     global p_button
     global gear
     global data
+    global clients
 
     while True:
-        global clients
         print('sender')
         print(clients)
         for c in clients:
@@ -101,11 +101,11 @@ if __name__ == "__main__":
             serial_thread.daemon = True
             serial_thread.start()
 
-        receiver_thread = threading.Thread(target=receiverthread(), args=())
+        receiver_thread = threading.Thread(target=receiverthread, args=())
         receiver_thread.daemon = True
         receiver_thread.start()
         print('why')
-        sender_thread = threading.Thread(target=senderthread(), args=())
+        sender_thread = threading.Thread(target=senderthread, args=())
         sender_thread.daemon = True
         sender_thread.start()
 
