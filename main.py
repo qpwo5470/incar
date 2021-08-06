@@ -136,7 +136,7 @@ if __name__ == "__main__":
         serial_thread.start()
 
     MC = MonitoringClient('http://34.64.189.234/post.php')
-    setMC = threading.Thread(target=setMC, args=(MC))
+    setMC = threading.Thread(target=setMC, args=(MC,))
     setMC.daemon = True
     setMC.start()
 
