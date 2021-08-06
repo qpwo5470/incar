@@ -26,7 +26,6 @@ acc = 0
 p_button = 0
 gear = 'N'
 data = {}
-clients = []
 
 baud = 9600
 
@@ -34,38 +33,43 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.bind(("0.0.0.0", 9999))
 sock.listen(1)
 
-def receiverthread():
-    global clients
-
+def acceptionthread():
     while True:
-        client, client_addr = sock.accept()
-        print(f'New Client: {client_addr}')
-        clients.append((client, client_addr))
+        c = sock.accept()
+        print(f'New Client: {c[1]}')
 
-def senderthread():
-    global acc
-    global p_button
-    global gear
-    global data
-    global clients
+        receiver_thread = threading.Thread(target=receiverthread, args=(c,))
+        receiver_thread.daemon = True
+        receiver_thread.start()
 
+        sender_thread = threading.Thread(target=senderthread, args=(c,))
+        sender_thread.daemon = True
+        sender_thread.start()
+
+
+def receiverthread(c):
+    client, client_addr = c
     while True:
-        for c in clients:
-            client, client_addr = c
-            data['accel'] = acc
-            data['P'] = p_button
-            data['gear'] = gear
-            try:
-                client.sendall(bytes(json.dumps(data), encoding="utf-8"))
-            except:
-                print(f'Client Left: {client_addr}')
-                clients.remove(client)
+        data = client.recv(1024).decode()
+        print(data)
+
+def senderthread(c):
+    client, client_addr = c
+    while True:
+        data['accel'] = acc
+        data['P'] = p_button
+        data['gear'] = gear
+        try:
+            client.sendall(bytes(json.dumps(data), encoding="utf-8"))
+        except:
+            print(f'Client Left: {client_addr}')
         time.sleep(1/15)
 
 def serialthread(ser):
     global acc
     global p_button
     global gear
+    global data
 
     line = []
     while True:
@@ -84,6 +88,9 @@ def serialthread(ser):
                         temp = text.split('/')
                         p_button = int(temp[0])
                         gear = temp[1]
+                    data['accel'] = acc
+                    data['P'] = p_button
+                    data['gear'] = gear
                 except IndexError:
                     pass
                 del line[:]
@@ -97,12 +104,8 @@ if __name__ == "__main__":
         serial_thread.daemon = True
         serial_thread.start()
 
-    receiver_thread = threading.Thread(target=receiverthread, args=())
-    receiver_thread.daemon = True
-    receiver_thread.start()
-
-    sender_thread = threading.Thread(target=senderthread(), args=())
-    sender_thread.daemon = True
-    sender_thread.start()
+    acception_thread = threading.Thread(target=acceptionthread(), args=())
+    acception_thread.daemon = True
+    acception_thread.start()
 
     sock.close()
