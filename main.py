@@ -62,6 +62,8 @@ def receiverthread(c):
 
 
 def senderthread(c, receiver):
+    global data
+
     client, client_addr = c
     while True:
         try:
