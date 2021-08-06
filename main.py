@@ -11,31 +11,37 @@ acc = 0
 p_button = 0
 gear = 'N'
 data = {}
+clients = []
 
 portA = '/dev/ttyUSB0'
 portB = '/dev/ttyUSB1'
 baud = 9600
 
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.bind(("0.0.0.0", 9999))
+sock.listen(1)
 
-def socketthread():
+def receiverthread():
+    global clients
+
+    while True:
+        client, client_addr = sock.accept()
+        clients.append(client)
+
+def senderthread():
     global acc
     global p_button
     global gear
     global data
+    global clients
 
     while True:
-        try:
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.connect(("192.168.0.2", 9999))
-            while True:
-                data['accel'] = acc
-                data['P'] = p_button
-                data['gear'] = gear
-                sock.sendall(bytes(json.dumps(data), encoding="utf-8"))
-                time.sleep(1/15)
-        except [ConnectionRefusedError, ConnectionAbortedError, ConnectionResetError, BrokenPipeError]:
-            pass
-
+        for client in clients:
+            data['accel'] = acc
+            data['P'] = p_button
+            data['gear'] = gear
+            client.sendall(bytes(json.dumps(data), encoding="utf-8"))
+            time.sleep(1/15)
 
 def serialthread(ser):
     global acc
@@ -74,5 +80,8 @@ if __name__ == "__main__":
     serial_threadB = threading.Thread(target=serialthread, args=(serB,))
     serial_threadB.start()
 
-    socket_thread = threading.Thread(target=socketthread(), args=())
-    socket_thread.start()
+    receiver_thread = threading.Thread(target=receiverthread(), args=())
+    receiver_thread.start()
+
+    sender_thread = threading.Thread(target=senderthread(), args=())
+    sender_thread.start()
