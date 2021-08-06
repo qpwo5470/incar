@@ -52,7 +52,7 @@ def receiverthread(c):
     while True:
         try:
             data = client.recv(1024).decode()
-            print(data)
+            print(f'Data from {client_addr} : {data}')
         except:
             print(f'Client Left: {client_addr}')
             break
