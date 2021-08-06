@@ -27,6 +27,7 @@ MC = MonitoringClient('http://34.64.189.234/post.php')
 acc = 0
 p_button = 0
 gear = 'N'
+change_gear = 'N'
 
 baud = 9600
 
@@ -50,12 +51,16 @@ def acceptionthread():
 
 
 def receiverthread(c):
+    global change_gear
     client, client_addr = c
     while True:
         try:
             data = client.recv(1024).decode()
             if not len(data):
                 raise ValueError
+            data = data.decode()
+            if data[0] in ['R','N','D']:
+                change_gear = data[0]
         except:
             print(f'Client Left: {client_addr}')
             break
@@ -80,14 +85,21 @@ def senderthread(c, receiver):
             break
         time.sleep(1/15)
 
-def serialthread(ser):
+def serialthread():
+    global ser
     global acc
     global p_button
     global gear
+    global change_gear
     global MC
 
+    dial = False
     line = []
     while True:
+        if dial:
+            if gear != change_gear:
+                ser.write(change_gear)
+                gear = change_gear
         for c in ser.read():
             if c == 10:
                 text = ''.join(line).strip()
@@ -100,6 +112,7 @@ def serialthread(ser):
                         else:
                             print(text)
                     elif text[0] == 'D':
+                        dial = True
                         text = text[1:]
                         temp = text.split('/')
                         p_button = int(temp[0])
