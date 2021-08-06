@@ -42,7 +42,7 @@ def acceptionthread():
         receiver_thread.daemon = True
         receiver_thread.start()
 
-        sender_thread = threading.Thread(target=senderthread, args=(c,))
+        sender_thread = threading.Thread(target=senderthread, args=(c,receiver_thread,))
         sender_thread.daemon = True
         sender_thread.start()
 
@@ -58,7 +58,7 @@ def receiverthread(c):
             break
 
 
-def senderthread(c):
+def senderthread(c, receiver):
     client, client_addr = c
     while True:
         data['accel'] = acc
@@ -67,6 +67,8 @@ def senderthread(c):
         try:
             client.sendall(bytes(json.dumps(data), encoding="utf-8"))
         except:
+            print(f'Client Left: {client_addr}')
+            receiver.join()
             break
         time.sleep(1/15)
 
