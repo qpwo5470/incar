@@ -92,8 +92,8 @@ if __name__ == "__main__":
         serial_threadA = threading.Thread(target=serialthread, args=(ser,))
         serial_threadA.start()
 
-    receiver_thread = threading.Thread(target=receiverthread(), args=())
-    receiver_thread.start()
-
     sender_thread = threading.Thread(target=senderthread(), args=())
     sender_thread.start()
+
+    receiver_thread = threading.Thread(target=receiverthread(), args=())
+    receiver_thread.start()
