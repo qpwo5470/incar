@@ -95,6 +95,7 @@ def serialthread(ser):
                         text = text[1:]
                         if text.isnumeric():
                             acc = int(text)
+                            print(acc)
                         else:
                             print(text)
                     elif text[0] == 'D':
