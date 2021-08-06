@@ -85,12 +85,11 @@ def senderthread(c, receiver):
             break
         time.sleep(1/15)
 
-def serialthread(ser):
+def serialthread(ser, MC):
     global acc
     global p_button
     global gear
     global change_gear
-    global MC
 
     dial = False
     line = []
@@ -107,6 +106,7 @@ def serialthread(ser):
                         text = text[1:]
                         if text.isnumeric():
                             acc = int(text)
+                            MC.set('accel', acc)
                         else:
                             print(text)
                     elif text[0] == 'D':
@@ -115,9 +115,8 @@ def serialthread(ser):
                         temp = text.split('/')
                         p_button = int(temp[0])
                         gear = temp[1]
-                    MC.set('accel', acc)
-                    MC.set('P', p_button)
-                    MC.set('gear', gear)
+                        MC.set('P', p_button)
+                        MC.set('gear', gear)
                 except IndexError:
                     pass
                 del line[:]
@@ -127,7 +126,7 @@ def serialthread(ser):
 if __name__ == "__main__":
     for port in serial_ports():
         ser = serial.Serial(port, baud, timeout=0)
-        serial_thread = threading.Thread(target=serialthread, args=(ser,))
+        serial_thread = threading.Thread(target=serialthread, args=(ser, MC,))
         serial_thread.daemon = True
         serial_thread.start()
 
