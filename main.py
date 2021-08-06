@@ -26,6 +26,7 @@ def receiverthread():
 
     while True:
         client, client_addr = sock.accept()
+        print(f'New Client: {client_addr}')
         clients.append(client)
 
 def senderthread():
