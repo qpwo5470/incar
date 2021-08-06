@@ -103,9 +103,9 @@ def serialthread(ser):
                         temp = text.split('/')
                         p_button = int(temp[0])
                         gear = temp[1]
-                    MC.set('accel', acc)
-                    MC.set('P', p_button)
-                    MC.set('gear', gear)
+                    # MC.set('accel', acc)
+                    # MC.set('P', p_button)
+                    # MC.set('gear', gear)
                 except IndexError:
                     pass
                 del line[:]
