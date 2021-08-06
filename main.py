@@ -27,7 +27,6 @@ MC = MonitoringClient('http://34.64.189.234/post.php')
 acc = 0
 p_button = 0
 gear = 'N'
-data = {}
 
 baud = 9600
 
@@ -62,10 +61,16 @@ def receiverthread(c):
 
 
 def senderthread(c, receiver):
-    global data
+    global acc
+    global p_button
+    global gear
 
     client, client_addr = c
     while True:
+        data = {}
+        data['accel'] = acc
+        data['P'] = p_button
+        data['gear'] = gear
         try:
             client.sendall(bytes(json.dumps(data), encoding="utf-8"))
         except:
@@ -78,7 +83,6 @@ def serialthread(ser):
     global acc
     global p_button
     global gear
-    global data
     global MC
 
     line = []
@@ -98,9 +102,6 @@ def serialthread(ser):
                         temp = text.split('/')
                         p_button = int(temp[0])
                         gear = temp[1]
-                    data['accel'] = acc
-                    data['P'] = p_button
-                    data['gear'] = gear
                     MC.set('accel', acc)
                     MC.set('P', p_button)
                     MC.set('gear', gear)
