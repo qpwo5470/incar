@@ -50,6 +50,7 @@ def senderthread():
     global clients
 
     while True:
+        print(clients)
         for client in clients:
             data['accel'] = acc
             data['P'] = p_button
@@ -66,7 +67,6 @@ def serialthread(ser):
     while True:
         for c in ser.read():
             if c == 10:
-                print(line)
                 text = ''.join(line).strip()
                 try:
                     if text[0] == 'A':
