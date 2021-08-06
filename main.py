@@ -30,55 +30,55 @@ gear = 'N'
 
 baud = 9600
 
-# sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-# sock.bind(("0.0.0.0", 9999))
-# sock.listen(1)
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.bind(("0.0.0.0", 9999))
+sock.listen(1)
 
-# def acceptionthread():
-#     global sock
-#     while True:
-#         c = sock.accept()
-#         print(f'New Client: {c[1]}')
-#
-#         receiver_thread = threading.Thread(target=receiverthread, args=(c,))
-#         receiver_thread.daemon = True
-#         receiver_thread.start()
-#
-#         sender_thread = threading.Thread(target=senderthread, args=(c,receiver_thread,))
-#         sender_thread.daemon = True
-#         sender_thread.start()
-#
-#
-# def receiverthread(c):
-#     client, client_addr = c
-#     while True:
-#         try:
-#             data = client.recv(1024).decode()
-#             if not len(data):
-#                 raise ValueError
-#         except:
-#             print(f'Client Left: {client_addr}')
-#             break
-#
-#
-# def senderthread(c, receiver):
-#     global acc
-#     global p_button
-#     global gear
-#
-#     client, client_addr = c
-#     while True:
-#         data = {}
-#         data['accel'] = acc
-#         data['P'] = p_button
-#         data['gear'] = gear
-#         try:
-#             client.sendall(bytes(json.dumps(data), encoding="utf-8"))
-#         except:
-#             print(f'Client Left: {client_addr}')
-#             receiver.join()
-#             break
-#         time.sleep(1/15)
+def acceptionthread():
+    global sock
+    while True:
+        c = sock.accept()
+        print(f'New Client: {c[1]}')
+
+        receiver_thread = threading.Thread(target=receiverthread, args=(c,))
+        receiver_thread.daemon = True
+        receiver_thread.start()
+
+        sender_thread = threading.Thread(target=senderthread, args=(c,receiver_thread,))
+        sender_thread.daemon = True
+        sender_thread.start()
+
+
+def receiverthread(c):
+    client, client_addr = c
+    while True:
+        try:
+            data = client.recv(1024).decode()
+            if not len(data):
+                raise ValueError
+        except:
+            print(f'Client Left: {client_addr}')
+            break
+
+
+def senderthread(c, receiver):
+    global acc
+    global p_button
+    global gear
+
+    client, client_addr = c
+    while True:
+        data = {}
+        data['accel'] = acc
+        data['P'] = p_button
+        data['gear'] = gear
+        try:
+            client.sendall(bytes(json.dumps(data), encoding="utf-8"))
+        except:
+            print(f'Client Left: {client_addr}')
+            receiver.join()
+            break
+        time.sleep(1/15)
 
 def serialthread(ser):
     global acc
@@ -120,8 +120,8 @@ if __name__ == "__main__":
         serial_thread.daemon = True
         serial_thread.start()
 
-    # acception_thread = threading.Thread(target=acceptionthread(), args=())
-    # acception_thread.daemon = True
-    # acception_thread.start()
+    acception_thread = threading.Thread(target=acceptionthread(), args=())
+    acception_thread.daemon = True
+    acception_thread.start()
 
-    # sock.close()
+    sock.close()
