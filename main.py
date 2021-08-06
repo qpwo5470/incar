@@ -128,7 +128,6 @@ def setMC(MC):
     global gear
 
     while True:
-        print(f'sending {acc, p_button, gear}')
         MC.set('accel', acc)
         MC.set('P', p_button)
         MC.set('gear', gear)
