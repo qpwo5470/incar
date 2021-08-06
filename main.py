@@ -76,6 +76,7 @@ def senderthread(c, receiver):
         data['accel'] = acc
         data['P'] = p_button
         data['gear'] = gear
+        print(data)
         try:
             client.sendall(bytes(json.dumps(data), encoding="utf-8"))
         except:
@@ -127,7 +128,7 @@ def setMC(MC):
     global gear
 
     while True:
-        print(acc)
+        print(f'sending {acc, p_button, gear}')
         MC.set('accel', acc)
         MC.set('P', p_button)
         MC.set('gear', gear)
