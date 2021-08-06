@@ -50,8 +50,13 @@ def acceptionthread():
 def receiverthread(c):
     client, client_addr = c
     while True:
-        data = client.recv(1024).decode()
-        print(data)
+        try:
+            data = client.recv(1024).decode()
+            print(data)
+        except:
+            print(f'Client Left: {client_addr}')
+            break
+
 
 def senderthread(c):
     client, client_addr = c
@@ -62,7 +67,7 @@ def senderthread(c):
         try:
             client.sendall(bytes(json.dumps(data), encoding="utf-8"))
         except:
-            print(f'Client Left: {client_addr}')
+            break
         time.sleep(1/15)
 
 def serialthread(ser):
