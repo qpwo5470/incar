@@ -12,6 +12,7 @@ import glob
 def serial_ports():
     ports = glob.glob('/dev/tty[A-Za-z]*')
     # ports = ['COM%s' % (i + 1) for i in range(256)]
+    # ports = ['COM8', 'COM9']
 
     result = []
     for port in ports:
