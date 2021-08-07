@@ -98,29 +98,32 @@ def serialthread(ser):
             if gear != change_gear:
                 ser.write(change_gear.encode())
                 gear = change_gear
-        for c in ser.read():
-            if c == 10:
-                text = ''.join(line).strip()
-                try:
-                    if text[0] == 'A':
-                        text = text[1:]
-                        if text.isnumeric():
-                            acc = int(text)
-                        else:
-                            print(text)
-                    elif text[0] == 'D':
-                        dial = True
-                        text = text[1:]
-                        temp = text.split('/')
-                        p_button = int(temp[0])
-                        gear = temp[1]
-                        change_gear = temp[1]
-                except IndexError:
-                    pass
-                del line[:]
-                ser.reset_input_buffer()
-            else:
-                line.append(chr(c))
+        try:
+            for c in ser.read():
+                if c == 10:
+                    text = ''.join(line).strip()
+                    try:
+                        if text[0] == 'A':
+                            text = text[1:]
+                            if text.isnumeric():
+                                acc = int(text)
+                            else:
+                                print(text)
+                        elif text[0] == 'D':
+                            dial = True
+                            text = text[1:]
+                            temp = text.split('/')
+                            p_button = int(temp[0])
+                            gear = temp[1]
+                            change_gear = temp[1]
+                    except IndexError:
+                        pass
+                    del line[:]
+                    ser.reset_input_buffer()
+                else:
+                    line.append(chr(c))
+        except:
+            pass
 
 
 def setMC(MC):
