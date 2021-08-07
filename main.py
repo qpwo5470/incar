@@ -44,7 +44,7 @@ def acceptionthread():
         receiver_thread.daemon = True
         receiver_thread.start()
 
-        sender_thread = threading.Thread(target=senderthread, args=(c,receiver_thread,))
+        sender_thread = threading.Thread(target=senderthread, args=(c,))
         sender_thread.daemon = True
         sender_thread.start()
 
@@ -54,18 +54,18 @@ def receiverthread(c):
     client, client_addr = c
     while True:
         try:
-            data = client.recv(1024).decode()
+            data = client.recv(1024)
             if not len(data):
                 raise ValueError
             data = data.decode()
             if data[0] in ['R','N','D']:
                 change_gear = data[0]
         except:
-            print(f'Client Left: {client_addr}')
+            print(f'RClient Left: {client_addr}')
             break
 
 
-def senderthread(c, receiver):
+def senderthread(c,):
     global acc
     global p_button
     global gear
@@ -80,8 +80,7 @@ def senderthread(c, receiver):
         try:
             client.sendall(bytes(json.dumps(data), encoding="utf-8"))
         except:
-            print(f'Client Left: {client_addr}')
-            receiver.join()
+            print(f'SClient Left: {client_addr}')
             break
         time.sleep(1/15)
 
