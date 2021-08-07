@@ -10,8 +10,9 @@ import glob
 
 
 def serial_ports():
-    ports = glob.glob('/dev/tty[A-Za-z]*')
-    # ports = ['COM%s' % (i + 1) for i in range(256)]
+    # ports = glob.glob('/dev/tty[A-Za-z]*')
+    return ['COM8', 'COM9']
+    ports = ['COM%s' % (i + 1) for i in range(256)]
 
     result = []
     for port in ports:
@@ -76,7 +77,7 @@ def senderthread(c, receiver):
         data['accel'] = acc
         data['P'] = p_button
         data['gear'] = gear
-        print(data)
+        #print(data)
         try:
             client.sendall(bytes(json.dumps(data), encoding="utf-8"))
         except:
@@ -91,8 +92,8 @@ def serialthread(ser):
     global gear
     global change_gear
 
-    dial = False
     line = []
+    dial = False
     while True:
         if dial:
             if gear != change_gear:
@@ -118,6 +119,7 @@ def serialthread(ser):
                 except IndexError:
                     pass
                 del line[:]
+                ser.reset_input_buffer()
             else:
                 line.append(chr(c))
 
@@ -135,6 +137,7 @@ def setMC(MC):
 
 if __name__ == "__main__":
     for port in serial_ports():
+        print(port)
         ser = serial.Serial(port, baud, timeout=0)
         serial_thread = threading.Thread(target=serialthread, args=(ser,))
         serial_thread.daemon = True
