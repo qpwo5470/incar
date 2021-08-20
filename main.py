@@ -59,6 +59,7 @@ def receiverthread(c):
             if not len(data):
                 raise ValueError
             data = data.decode()
+            print(client_addr, data)
             if data[0] in ['R','N','D']:
                 change_gear = data[0]
         except:
