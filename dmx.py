@@ -3,10 +3,12 @@ from DMXEnttecPro.utils import get_port_by_serial_number, get_port_by_product_id
 from pythonosc.dispatcher import Dispatcher
 from pythonosc.osc_server import BlockingOSCUDPServer
 import time
+import threading
 
 time.sleep(10)
 my_port = get_port_by_product_id(24577)
 dmx = Controller(my_port, auto_submit=True)
+running = False
 
 light_map = {
     '/tail': [[(1, 0), (2, 0), (3, 1)], [(1, 1), (2, 0), (3, 1)], [(1, 1), (2, 0), (3, 0)], [(1, 0), (2, 1), (3, 1)]],
@@ -27,30 +29,42 @@ lines = [[float(line.split('\t')[0]), [sig.split(' ') for sig in line.split('\t'
 
 
 def default_handler(address, *args):
-    global light_map
-    global lines
+    global running
     print(args)
     if address == '/play':
         if args[0] == 1:
-            start_time = time.time()
-            i = 0
-            while True:
-                now = lines[i]
-                if time.time() - start_time > now[0]:
-                    print(now)
-                    for each in now[1]:
-                        sig = light_map[f'/{each[0]}'][int(each[1])]
-                        for s in sig:
-                            dmx.set_channel(s[0], s[1] * 255)
-                    i += 1
-                    if i == len(lines):
-                        break
-
+            running = True
+            dmx_thread = threading.Thread(target=run_dmx, args=())
+            dmx_thread.daemon = True
+            dmx_thread.start()
         elif args[0] == 0:
+            running = False
             sig = [(1, 1), (2, 0), (3, 1), (4, 0), (5, 0), (9, 0), (10, 0), (11, 0), (12, 0), (13, 1), (14, 0), (15, 1),
                    (16, 1)]
             for s in sig:
                 dmx.set_channel(s[0], s[1] * 255)
+
+def run_dmx():
+    global light_map
+    global lines
+    global running
+
+    start_time = time.time()
+    i = 0
+    while True:
+        if not running:
+            break
+        now = lines[i]
+        if time.time() - start_time > now[0]:
+            print(now)
+            for each in now[1]:
+                sig = light_map[f'/{each[0]}'][int(each[1])]
+                for s in sig:
+                    dmx.set_channel(s[0], s[1] * 255)
+            i += 1
+            if i == len(lines):
+                break
+
 
 
 dispatcher = Dispatcher()
