@@ -18,32 +18,39 @@ light_map = {
     '/turn': [[(12, 0), (14, 0)], [(12, 1), (14, 0)], [(12, 1), (14, 1)]],
     # off turn hazard
     '/eyeline': [[(13, 0), (15, 0), (16, 0)], [(13, 1), (15, 0), (16, 1)], [(13, 1), (15, 1), (16, 1)],
-                [(13, 0), (15, 1), (16, 1)]]}
+                 [(13, 0), (15, 1), (16, 1)]]}
 # off bottom both welcome
 
 f = open('timeline.txt')
-lines = [[float(line.split('\t')[0]), [sig.split(' ') for sig in line.split('\t')[1].split(',')]] for line in [l.strip() for l in f.readlines()]]
+lines = [[float(line.split('\t')[0]), [sig.split(' ') for sig in line.split('\t')[1].split(',')]] for line in
+         [l.strip() for l in f.readlines()]]
 
 
 def default_handler(address, *args):
     global light_map
     global lines
     print(args)
-    if address == '/play' and args[0]:
-        start_time = time.time()
-        i = 0
-        while True:
-            now = lines[i]
-            if time.time()-start_time > now[0]:
-                print(now)
-                for each in now[1]:
-                    sig = light_map[f'/{each[0]}'][int(each[1])]
-                    for s in sig:
-                        dmx.set_channel(s[0], s[1] * 255)
-                i += 1
-                if i == len(lines):
-                    break
+    if address == '/play':
+        if args[0] == 1:
+            start_time = time.time()
+            i = 0
+            while True:
+                now = lines[i]
+                if time.time() - start_time > now[0]:
+                    print(now)
+                    for each in now[1]:
+                        sig = light_map[f'/{each[0]}'][int(each[1])]
+                        for s in sig:
+                            dmx.set_channel(s[0], s[1] * 255)
+                    i += 1
+                    if i == len(lines):
+                        break
 
+        elif args[0] == 0:
+            sig = [(1, 1), (2, 0), (3, 1), (4, 0), (5, 0), (9, 0), (10, 0), (11, 0), (12, 0), (13, 1), (14, 0), (15, 1),
+                   (16, 1)]
+            for s in sig:
+                dmx.set_channel(s[0], s[1] * 255)
 
 
 dispatcher = Dispatcher()
