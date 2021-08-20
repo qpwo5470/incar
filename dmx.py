@@ -49,8 +49,8 @@ def default_handler(address, *args):
 dispatcher = Dispatcher()
 dispatcher.set_default_handler(default_handler)
 
-ip = "192.168.1.8"
-port = 1337
+ip = "192.168.1.109"
+port = 2055
 
 server = BlockingOSCUDPServer((ip, port), dispatcher)
 server.serve_forever()  # Blocks forever
