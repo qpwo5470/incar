@@ -4,6 +4,7 @@ from pythonosc.dispatcher import Dispatcher
 from pythonosc.osc_server import BlockingOSCUDPServer
 import time
 
+time.sleep(10)
 my_port = get_port_by_product_id(24577)
 dmx = Controller(my_port, auto_submit=True)
 
@@ -22,7 +23,6 @@ light_map = {
 
 f = open('timeline.txt')
 lines = [[float(line.split('\t')[0]), [sig.split(' ') for sig in line.split('\t')[1].split(',')]] for line in [l.strip() for l in f.readlines()]]
-print(lines)
 
 
 def default_handler(address, *args):
